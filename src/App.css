@@ -417,6 +417,7 @@ header >a{
   border: none;
   outline: none;
   font-weight: 500;
+  margin: 5px;
 }
 
 .cta:disabled{

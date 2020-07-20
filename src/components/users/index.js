@@ -1,12 +1,14 @@
 import React from 'react';
 
+import { getLocalStorage, setLocalStorage, emailValidator } from './../../utils/commonUtils'
+
 import './index.scss';
 
 class Users extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            userDetail: localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : [],
+            userDetail: getLocalStorage('users') ? getLocalStorage('users') : [],
             editUser: "false",
             createuser: true
         }
@@ -21,11 +23,23 @@ class Users extends React.Component {
         this.setState({
             [name]: e.target.value
         }, () => {
+            if (name === 'email') {
+                if (!emailValidator(this.state.email)) {
+                    document.getElementById('emailError').innerHTML = 'Enter a valid email'
+                } else {
+                    document.getElementById('emailError').innerHTML = ''
+                }
+            }
             this.validatePayload();
         })
     }
 
+    /*
+        function to add user.
+        same email and mobile cannot be added as user.
+    */
     addUser = (e) => {
+        
         let mobileNumberCheck = this.state.userDetail.filter((user) => (user.mobile === this.state.mobile || user.email === this.state.email))
         if (mobileNumberCheck.length > 0) {
             alert('User with same mobile or mobile already exists. Please use a provide another email or mobile');
@@ -51,8 +65,12 @@ class Users extends React.Component {
         this.forceUpdate();
     }
 
+    /*
+        function to delete user.
+        User with due amount either owning or borrowed cannot be deleted untill the amount is settled i.r 0.
+    */
+
     deleteUser = (e, value) => {
-        console.log(value.id);
         if (value.totalAmt === 0) {
             let activeUser = this.state.userDetail.filter(items => items.id !== value.id);
             this.setState({
@@ -65,6 +83,10 @@ class Users extends React.Component {
         }
 
     }
+
+    /*
+        Function which edits the username, mobile and email.
+    */
     editUser = (e, userData) => {
         this.setState({
             'edituser': "true",
@@ -79,6 +101,8 @@ class Users extends React.Component {
             })
         })
     }
+
+
     save = (e) => {
         let editingValue = this.state.userDetail.filter(usr => usr.id !== this.state.id)
         this.setState({
@@ -92,7 +116,7 @@ class Users extends React.Component {
             }],
         },
             () => {
-                localStorage.setItem('users', JSON.stringify(this.state.userDetail));
+                setLocalStorage('users', this.state.userDetail);
                 this.setState({
                     'editUser': "false"
                 })
@@ -102,8 +126,11 @@ class Users extends React.Component {
         this.forceUpdate();
     }
 
+    /**
+     * validating the payload, not to allow empty email mobile or name field.
+     */
     validatePayload = () => {
-        if (this.state.name !== '' && this.state.mobile && this.state.email !== '') {
+        if (this.state.name !== '' && (this.state.mobile != null && this.state.mobile.length === 10) && this.state.email !== '') {
             this.setState({
                 createuser: false
             })
@@ -114,7 +141,6 @@ class Users extends React.Component {
         }
     }
 
-
     render() {
         return (
             <React.Fragment>
@@ -123,15 +149,16 @@ class Users extends React.Component {
                         <h1>Add users</h1>
                         <div className="formgroup">
                             <label htmlFor="uname">Name</label>
-                            <input id='uname' type='text' onChange={e => { this.handleChange(e, 'name') }} value={this.state.name && this.state.name} />
+                            <input id='uname' type='text' required onChange={e => { this.handleChange(e, 'name') }} value={this.state.name && this.state.name} />
                         </div>
                         <div className="formgroup">
                             <label htmlFor="email">Email</label>
-                            <input id='email' type='email' onChange={e => { this.handleChange(e, 'email') }} value={this.state.email && this.state.email} />
+                            <input id='email' type='email' required onChange={e => { this.handleChange(e, 'email') }} value={this.state.email && this.state.email} />
+                            <label id="emailError"></label>
                         </div>
                         <div className="formgroup">
                             <label htmlFor="mobile">Mobile</label>
-                            <input id='mobile' type='mobile' onChange={e => { this.handleChange(e, 'mobile') }} value={this.state.mobile && this.state.mobile} />
+                            <input id='mobile' type='mobile' required maxLength="10" onChange={e => { this.handleChange(e, 'mobile') }} value={this.state.mobile && this.state.mobile} />
                         </div>
                         {this.state.editUser === "false" && <button className="cta" disabled={this.state.createuser} onClick={e => { this.addUser(e) }}>Add User</button>}
                         {this.state.edituser === "true" && <button className="cta" onClick={e => { this.save(e) }}>Save User</button>}
@@ -168,8 +195,8 @@ class Users extends React.Component {
                                                 <td>{item.name}</td>
                                                 <td>{item.email}</td>
                                                 <td>{item.mobile}</td>
-                                                <td>Rs. {item.totalAmt}</td>
-                                                <td>{item.totalAmt !== 0 ? (item.totalAmt > 0 ? `You owe ${item.totalAmt} to others` : `You borrow ${item.totalAmt} to others`) : `You don't own to anyone`}</td>
+                                                <td>&#8377; {item.totalAmt}</td>
+                                                <td>{item.totalAmt !== 0 ? (item.totalAmt > 0 ? `You owe ${item.totalAmt} to others` : `You borrow  ${item.totalAmt} to others`) : `You don't own to anyone`}</td>
                                                 <td>
                                                     <button className="cta2 edit" onClick={e => { this.editUser(e, item) }}>Edit</button>
                                                     <button className="cta2 delete" onClick={e => { this.deleteUser(e, item) }}>Delete</button>
@@ -181,10 +208,7 @@ class Users extends React.Component {
                             </tbody>
                         </table>) : <div>No user exists. Please add a user.</div>}
                 </div>
-
-
             </React.Fragment>
-
         );
     }
 }

@@ -2,6 +2,8 @@ import React from 'react';
 
 import Expense from '../expense';
 
+import { getLocalStorage } from './../../utils/commonUtils'
+
 import './index.scss';
 
 class Bills extends React.Component {
@@ -9,17 +11,17 @@ class Bills extends React.Component {
         super(props);
         this.state = {
             showModal: false,
-            users: localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : [],
-            bills: localStorage.getItem('bills') ? JSON.parse(localStorage.getItem('bills')) : [],
+            users: getLocalStorage('users'),
+            bills: getLocalStorage('bills'),
             bill: {
                 paidBy: '',
                 description: '',
                 amount: '',
-                owedBy:[]
+                owedBy: []
             },
-            userMapping:{}
+            userMapping: {}
         }
-        this.setUserMapping(localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : []);
+        this.setUserMapping(getLocalStorage('users'));
     }
 
     setUserMapping = (users) => {
@@ -33,7 +35,7 @@ class Bills extends React.Component {
         this.setState({
             showModal: !this.state.showModal
         });
-        if(data) {
+        if (data) {
             this.setState({
                 bills: data
             });
@@ -45,7 +47,7 @@ class Bills extends React.Component {
             paidBy: '',
             description: '',
             amount: '',
-            owedBy:[]
+            owedBy: []
         };
         this.setState({
             bill: data
@@ -53,7 +55,7 @@ class Bills extends React.Component {
             this.toggleModal();
         });
     }
-   
+
     render() {
         const usersExists = this.state.users.length > 0;
         const { bills, users, bill } = this.state;
@@ -61,7 +63,7 @@ class Bills extends React.Component {
             <div className="container bills-wrapper">
                 {!usersExists && <p className="text">Please add <a href="/users">users</a> before adding bills</p>}
                 <button disabled={!usersExists} className="cta" onClick={() => this.editBill()}>Add an expense</button>
-                {this.state.showModal && <Expense users={users} bills={bills}  userMap={this.userMapping} currentBill={bill} close={this.toggleModal} />}
+                {this.state.showModal && <Expense users={users} bills={bills} userMap={this.userMapping} currentBill={bill} close={this.toggleModal} />}
                 {bills.length > 0 ? (
                     <table>
                         <colgroup>
@@ -74,7 +76,7 @@ class Bills extends React.Component {
                         </colgroup>
                         <thead>
                             <tr>
-                                <th>BillId</th>
+                                <th>Bill Id</th>
                                 <th>Description</th>
                                 <th>Amount</th>
                                 <th>Owed By</th>
@@ -89,7 +91,7 @@ class Bills extends React.Component {
                                         <tr key={index}>
                                             <td>{item.id}</td>
                                             <td>{item.description}</td>
-                                            <td>{item.amount}</td>
+                                            <td>&#8377; {item.amount}</td>
                                             <td>
                                                 {item.owedBy.map((user) => {
                                                     return <div key={user}>{this.userMapping[user] ? this.userMapping[user].name : ''}</div>
