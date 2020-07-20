@@ -16,13 +16,15 @@ class Bills extends React.Component {
                 description: '',
                 amount: '',
                 owedBy:[]
-            }
+            },
+            userMapping:{}
         }
-        this.userMapping = {};
+        this.setUserMapping(localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : []);
     }
 
-    componentDidMount() {
-        this.state.users.forEach(user => {
+    setUserMapping = (users) => {
+        this.userMapping = {}
+        users.forEach(user => {
             this.userMapping[user.id] = user;
         });
     }
@@ -62,16 +64,25 @@ class Bills extends React.Component {
                 {this.state.showModal && <Expense users={users} bills={bills} currentBill={bill} close={this.toggleModal} />}
                 {bills.length > 0 ? (
                     <table>
-                        <tbody>
+                        <colgroup>
+                            <col width="5%" />
+                            <col width="35%" />
+                            <col width="20%" />
+                            <col width="20%" />
+                            <col width="20%" />
+                            <col width="15%" />
+                        </colgroup>
+                        <thead>
                             <tr>
-                                <td>BillId</td>
-                                <td>Description</td>
-                                <td>Amount</td>
-                                <td>Paid By</td>
-                                <td>Owed By</td>
-                                <td>Action</td>
+                                <th>BillId</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Owed By</th>
+                                <th>Paid By</th>
+                                <th>Action</th>
                             </tr>
-                            
+                        </thead>
+                        <tbody>
                             {
                                 bills.map((item, index) => {
                                     return (
@@ -79,9 +90,13 @@ class Bills extends React.Component {
                                             <td>{item.id}</td>
                                             <td>{item.description}</td>
                                             <td>{item.amount}</td>
-                                            <td>{item.owedBy}</td>
-                                            <td>{item.paidBy}</td>
-                                            <td><button onClick={() => this.editBill(item)}>Edit</button></td>
+                                            <td>
+                                                {item.owedBy.map((user) => {
+                                                    return <div key={user}>{this.userMapping[user] ? this.userMapping[user].name : ''}</div>
+                                                })}
+                                            </td>
+                                            <td>{this.userMapping[item.paidBy] ? this.userMapping[item.paidBy].name : ''}</td>
+                                            <td><button className="cta2 edit" onClick={() => this.editBill(item)}>Edit</button></td>
                                         </tr>
                                     );
                                 })
