@@ -117,22 +117,24 @@ class Users extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <div>
-                    <h1>Add users</h1>
-                    <div>
-                        <label htmlFor="uname">Name</label>
-                        <input id='uname' type='text' onChange={e => { this.handleChange(e, 'name') }} value={this.state.name && this.state.name} />
+                <div className="user-wrapper container">
+                    <div className="form-wrapper">
+                        <h1>Add users</h1>
+                        <div className="formgroup">
+                            <label htmlFor="uname">Name</label>
+                            <input id='uname' type='text' onChange={e => { this.handleChange(e, 'name') }} value={this.state.name && this.state.name} />
+                        </div>
+                        <div className="formgroup">
+                            <label htmlFor="email">Email</label>
+                            <input id='email' type='email' onChange={e => { this.handleChange(e, 'email') }} value={this.state.email && this.state.email} />
+                        </div>
+                        <div className="formgroup">
+                            <label htmlFor="mobile">Mobile</label>
+                            <input id='mobile' type='mobile' onChange={e => { this.handleChange(e, 'mobile') }} value={this.state.mobile && this.state.mobile} />
+                        </div>
+                        {this.state.editUser === "false" && <button className="cta" disabled={this.state.createuser} onClick={e => { this.addUser(e) }}>Add User</button>}
+                        {this.state.edituser === "true" && <button className="cta" onClick={e => { this.save(e) }}>Save User</button>}
                     </div>
-                    <div>
-                        <label htmlFor="email">Email</label>
-                        <input id='email' type='email' onChange={e => { this.handleChange(e, 'email') }} value={this.state.email && this.state.email} />
-                    </div>
-                    <div>
-                        <label htmlFor="mobile">Mobile</label>
-                        <input id='mobile' type='mobile' onChange={e => { this.handleChange(e, 'mobile') }} value={this.state.mobile && this.state.mobile} />
-                    </div>
-                    {this.state.editUser === "false" && <button disabled={this.state.createuser} onClick={e => { this.addUser(e) }}>Add User</button>}
-                    {this.state.edituser === "true" && <button onClick={e => { this.save(e) }}>Save User</button>}
 
                     {this.state.userDetail.length > 0 ? (
                         <table>
