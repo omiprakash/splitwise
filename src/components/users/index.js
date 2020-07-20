@@ -39,7 +39,7 @@ class Users extends React.Component {
         same email and mobile cannot be added as user.
     */
     addUser = (e) => {
-        
+
         let mobileNumberCheck = this.state.userDetail.filter((user) => (user.mobile === this.state.mobile || user.email === this.state.email))
         if (mobileNumberCheck.length > 0) {
             alert('User with same mobile or mobile already exists. Please use a provide another email or mobile');
@@ -165,48 +165,49 @@ class Users extends React.Component {
                     </div>
 
                     {this.state.userDetail.length > 0 ? (
-                        <table>
-                            <colgroup>
-                                <col width="5%" />
-                                <col width="25%" />
-                                <col width="15%" />
-                                <col width="20%" />
-                                <col width="20%" />
-                                <col width="15%" />
-                            </colgroup>
-                            <thead>
-
-                                <tr>
-                                    <th>UserId</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Mobile</th>
-                                    <th>Total Bill</th>
-                                    <th>Summary</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    this.state.userDetail.length > 0 && this.state.userDetail.map((item, index) => {
-                                        return (
-                                            <tr key={index}>
-                                                <td>{item.id}</td>
-                                                <td>{item.name}</td>
-                                                <td>{item.email}</td>
-                                                <td>{item.mobile}</td>
-                                                <td>&#8377; {item.totalAmt}</td>
-                                                <td>{item.totalAmt !== 0 ? (item.totalAmt > 0 ? `You owe ${item.totalAmt} to others` : `You borrow  ${item.totalAmt} to others`) : `You don't own to anyone`}</td>
-                                                <td>
-                                                    <button className="cta2 edit" onClick={e => { this.editUser(e, item) }}>Edit</button>
-                                                    <button className="cta2 delete" onClick={e => { this.deleteUser(e, item) }}>Delete</button>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })
-                                }
-                            </tbody>
-                        </table>) : <div>No user exists. Please add a user.</div>}
+                        <div className="table-wrapper">
+                            <table>
+                                <colgroup>
+                                    <col width="5%" />
+                                    <col width="25%" />
+                                    <col width="15%" />
+                                    <col width="20%" />
+                                    <col width="20%" />
+                                    <col width="15%" />
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>UserId</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Mobile</th>
+                                        <th>Total Bill</th>
+                                        <th>Summary</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        this.state.userDetail.length > 0 && this.state.userDetail.map((item, index) => {
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{item.id}</td>
+                                                    <td>{item.name}</td>
+                                                    <td>{item.email}</td>
+                                                    <td>{item.mobile}</td>
+                                                    <td>&#8377; {item.totalAmt}</td>
+                                                    <td>{item.totalAmt !== 0 ? (item.totalAmt > 0 ? `You owe ${item.totalAmt} to others` : `You borrow ${item.totalAmt} to others`) : `You don't own to anyone`}</td>
+                                                    <td>
+                                                        <button className="cta2 edit" onClick={e => { this.editUser(e, item) }}>Edit</button>
+                                                        <button className="cta2 delete" onClick={e => { this.deleteUser(e, item) }}>Delete</button>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+                        </div>) : <div>No user exists. Please add a user.</div>}
                 </div>
             </React.Fragment>
         );

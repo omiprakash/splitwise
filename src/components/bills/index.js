@@ -65,46 +65,48 @@ class Bills extends React.Component {
                 <button disabled={!usersExists} className="cta" onClick={() => this.editBill()}>Add an expense</button>
                 {this.state.showModal && <Expense users={users} bills={bills} userMap={this.userMapping} currentBill={bill} close={this.toggleModal} />}
                 {bills.length > 0 ? (
-                    <table>
-                        <colgroup>
-                            <col width="5%" />
-                            <col width="35%" />
-                            <col width="20%" />
-                            <col width="20%" />
-                            <col width="20%" />
-                            <col width="15%" />
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th>Bill Id</th>
-                                <th>Description</th>
-                                <th>Amount</th>
-                                <th>Owed By</th>
-                                <th>Paid By</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                bills.map((item, index) => {
-                                    return (
-                                        <tr key={index}>
-                                            <td>{item.id}</td>
-                                            <td>{item.description}</td>
-                                            <td>&#8377; {item.amount}</td>
-                                            <td>
-                                                {item.owedBy.map((user) => {
-                                                    return <div key={user}>{this.userMapping[user] ? this.userMapping[user].name : ''}</div>
-                                                })}
-                                            </td>
-                                            <td>{this.userMapping[item.paidBy] ? this.userMapping[item.paidBy].name : ''}</td>
-                                            <td><button className="cta2 edit" onClick={() => this.editBill(item)}>Edit</button></td>
-                                        </tr>
-                                    );
-                                })
-                            }
-                        </tbody>
-                    </table>) : <div>No bills exists. Please add a bill.</div>}
+                    <div className="table-wrapper">
+                        <table>
+                            <colgroup>
+                                <col width="5%" />
+                                <col width="35%" />
+                                <col width="20%" />
+                                <col width="20%" />
+                                <col width="20%" />
+                                <col width="15%" />
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>BillId</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>Owed By</th>
+                                    <th>Paid By</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    bills.map((item, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td>{item.id}</td>
+                                                <td>{item.description}</td>
+                                                <td>&#8377; {item.amount}</td>
+                                                <td>
+                                                    {item.owedBy.map((user) => {
+                                                        return <div key={user}>{this.userMapping[user] ? this.userMapping[user].name : ''}</div>
+                                                    })}
+                                                </td>
+                                                <td>{this.userMapping[item.paidBy] ? this.userMapping[item.paidBy].name : ''}</td>
+                                                <td><button className="cta2 edit" onClick={() => this.editBill(item)}>Edit</button></td>
+                                            </tr>
+                                        );
+                                    })
+                                }
+                            </tbody>
+                        </table>
+                    </div>) : <div>No bills exists. Please add a bill.</div>}
             </div>
         );
     }
