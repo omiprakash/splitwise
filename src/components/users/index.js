@@ -93,9 +93,10 @@ class Users extends React.Component {
         },
             () => {
                 localStorage.setItem('users', JSON.stringify(this.state.userDetail));
-                this.setState(this.baseState, {
+                this.setState({
                     'editUser': "false"
                 })
+                this.setState(this.baseState)
             }
         )
         this.forceUpdate();
