@@ -419,6 +419,10 @@ header >a{
   font-weight: 500;
 }
 
+.cta:disabled{
+  background: #ccc;
+}
+
 .formgroup{
   text-align: left;
   margin-bottom: 20px;
@@ -433,6 +437,11 @@ header >a{
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 0 10px;
+}
+
+.formgroup select.multiple {
+  padding: 6px 10px;
+  height: 60px;
 }
 
 .formgroup input:focus, .formgroup select:focus{

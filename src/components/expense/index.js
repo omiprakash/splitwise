@@ -6,23 +6,50 @@ class Expense extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            users: localStorage.getItem('users') ? localStorage.getItem('users') : []
+            bill: props.currentBill,
+            disableBtn: props.currentBill.id ? false : true
         }
         this.selectedUserId = [];
     }
 
-    addExpenses = (e) => {
-        if(e.target.value !== "" && !this.selectedUserId.includes(e.target.value)){
-            this.selectedUserId.push(e.target.value);
+    handleChange = (e, name) => {
+        const val = name === 'owedBy' ? [...e.target.selectedOptions].map(option => option.value) : e.target.value;
+        const bill = this.state.bill;
+        bill[name] = val
+        this.setState(bill, () => {
+            this.validatePayload();
+        })
+    }
+
+    validatePayload = () => {
+        console.log(this.state.description ,this.state.amount,this.state.paidBy,this.state.owedBy, this.state.owedBy.length>0);
+        if (this.state.description && this.state.amount && this.state.paidBy && this.state.owedBy && this.state.owedBy.length>0) {
+            this.setState({
+                disableBtn: false
+            })
+        } else {
+            this.setState({
+                disableBtn: true
+            })
         }
-        console.log(this.selectedUserId);
+    }
+
+    submitExpense = () => {
+        const { bills } = this.props;
+        if(this.state.bill.id) {
+            const billIndex = bills.findIndex((bill) => bill.id === this.state.bill.id);
+            bills[billIndex] = this.state.bill;
+        } else {
+            const { bill } = this.state;
+            bills.push({...bill, id: bills.length+1});
+        }
+        localStorage.setItem('bills', JSON.stringify(bills));
+        this.props.close(bills);
     }
    
     render() {
-        const userData = [
-            {'id': 1, 'name': 'omi', 'email': 'testing@mail.com', 'mobile': '9962983727', 'totalAmt': 20},
-            {'id': 2, 'name': 'test', 'email': 'testing@mail.com', 'mobile': '9655059125', 'totalAmt': 20}
-        ];
+        // const userData = [{"id":1,"name":"test","email":"skdjh@kkfghjk.com","mobile":"9087654321","totalAmt":0},{"id":2,"name":"qwer","email":"sdfh@hsdgk.com","mobile":"8097654321","totalAmt":0}];
+        const userData = this.props.users;
         return (
             <div className="modal">
                 <div className="overlay" onClick={() => this.props.close()}></div>
@@ -33,20 +60,20 @@ class Expense extends React.Component {
                     </div>
                     <div className="modal__body">
                         <div className="formgroup">
-                            <label htmlFor="expances">Enter a description</label>
-                            <input id='expenses' type='text' onChange={e => {this.handleChange(e, 'expenses')}}/>
+                            <label>Enter a description</label>
+                            <input  type='text' value={this.state.bill.description} onChange={e => {this.handleChange(e, 'description')}}/>
                         </div>
                         <div className="formgroup">
-                            <label htmlFor="expances">Amount</label>
-                            <input id='expenses' type='text' onChange={e => {this.handleChange(e, 'amount')}}/>
+                            <label>Amount</label>
+                            <input type='text' value={this.state.bill.amount} onChange={e => {this.handleChange(e, 'amount')}}/>
                         </div>
                         <div className="formgroup">
                             <label htmlFor="expances">Select Friends to split</label>
-                            <select multiple onChange={e => {this.addExpenses(e)}}>
+                            <select className="multiple" multiple size="1" value={this.state.bill.owedBy} onChange={e => {this.handleChange(e, 'owedBy')}}>
                                 {
                                     userData.map((usr, idx) => {
                                         return(
-                                            <option value={usr.id}>{usr.name}</option>
+                                            <option key={idx} value={usr.id}>{usr.name}</option>
                                         )
                                     })
                                 }
@@ -54,17 +81,18 @@ class Expense extends React.Component {
                         </div>
                         <div className="formgroup">
                             <label htmlFor="expances">Paid by</label>
-                            <select onChange={e => {this.handleChange(e, 'paidby')}}>
+                            <select onChange={e => {this.handleChange(e, 'paidBy')}} placeholder="Select" value={this.state.bill.paidBy}>
+                                <option value="" disabled hidden>Select who paid the bill</option>
                                 {
                                     userData.map((usr, idx) => {
                                         return(
-                                            <option value={usr.id}>{usr.name}</option>
+                                            <option key={usr.id} value={usr.id}>{usr.name}</option>
                                         )
                                     })
                                 }
                             </select>
                         </div>
-                        <button className="cta">Submit</button>
+                        <button disabled={this.state.disableBtn} className="cta" onClick={() => this.submitExpense()}>Submit</button>
                     </div>
                     
                 </div>
