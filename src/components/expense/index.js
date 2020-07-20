@@ -35,7 +35,7 @@ class Expense extends React.Component {
     }
 
     submitExpense = () => {
-        const { bills } = this.props;
+        const { bills, userMap } = this.props;
         if(this.state.bill.id) {
             const billIndex = bills.findIndex((bill) => bill.id === this.state.bill.id);
             bills[billIndex] = this.state.bill;
@@ -43,6 +43,18 @@ class Expense extends React.Component {
             const { bill } = this.state;
             bills.push({...bill, id: bills.length+1});
         }
+        for (const userId in userMap) {
+            userMap[userId].totalAmt = 0
+        }
+        bills.forEach(bill => {
+            const individualAmt = parseInt(bill.amount)/bill.owedBy.length;
+            bill.owedBy.forEach(owedId => {
+                userMap[owedId].totalAmt += -individualAmt;
+            });
+            userMap[bill.paidBy].totalAmt += parseInt(bill.amount);
+        });
+        const users = Object.values(userMap);
+        localStorage.setItem('users', JSON.stringify(users));
         localStorage.setItem('bills', JSON.stringify(bills));
         this.props.close(bills);
     }

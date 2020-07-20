@@ -61,7 +61,7 @@ class Bills extends React.Component {
             <div className="container bills-wrapper">
                 {!usersExists && <p className="text">Please add <a href="/users">users</a> before adding bills</p>}
                 <button disabled={!usersExists} className="cta" onClick={() => this.editBill()}>Add an expense</button>
-                {this.state.showModal && <Expense users={users} bills={bills} currentBill={bill} close={this.toggleModal} />}
+                {this.state.showModal && <Expense users={users} bills={bills}  userMap={this.userMapping} currentBill={bill} close={this.toggleModal} />}
                 {bills.length > 0 ? (
                     <table>
                         <colgroup>
