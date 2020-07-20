@@ -138,33 +138,46 @@ class Users extends React.Component {
 
                     {this.state.userDetail.length > 0 ? (
                         <table>
-                            <tr>
-                                <td>UserId</td>
-                                <td>Name</td>
-                                <td>Email</td>
-                                <td>Mobile</td>
-                                <td>Total Bill</td>
-                                <td>Summary</td>
-                                <td>Action</td>
-                            </tr>
-                            {
-                                this.state.userDetail.length > 0 && this.state.userDetail.map((item, index) => {
-                                    return (
-                                        <div key={index}>
-                                        <td>{item.id}</td>
-                                        <td>{item.name}</td>
-                                        <td>{item.email}</td>
-                                        <td>{item.mobile}</td>
-                                        <td>Rs. {item.totalAmt}</td>
-                                        <td>{item.totalAmt !== 0 ? (item.totalAmt > 0 ? `You owe ${item.totalAmt} to others` : `You borrow ${item.totalAmt} to others`) : `You don't own to anyone`}</td>
-                                        <td>
-                                            <button onClick={e => { this.editUser(e, item) }}>Edit</button>
-                                            <button onClick={e => { this.deleteUser(e, item) }}>Delete</button></td>
-                                            </div>
-                                    );
-                                })
-                            }
+                            <colgroup>
+                                <col width="5%" />
+                                <col width="25%" />
+                                <col width="15%" />
+                                <col width="20%" />
+                                <col width="20%" />
+                                <col width="15%" />
+                            </colgroup>
+                            <thead>
 
+                                <tr>
+                                    <th>UserId</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Mobile</th>
+                                    <th>Total Bill</th>
+                                    <th>Summary</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    this.state.userDetail.length > 0 && this.state.userDetail.map((item, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td>{item.id}</td>
+                                                <td>{item.name}</td>
+                                                <td>{item.email}</td>
+                                                <td>{item.mobile}</td>
+                                                <td>Rs. {item.totalAmt}</td>
+                                                <td>{item.totalAmt !== 0 ? (item.totalAmt > 0 ? `You owe ${item.totalAmt} to others` : `You borrow ${item.totalAmt} to others`) : `You don't own to anyone`}</td>
+                                                <td>
+                                                    <button className="cta2 edit" onClick={e => { this.editUser(e, item) }}>Edit</button>
+                                                    <button className="cta2 delete" onClick={e => { this.deleteUser(e, item) }}>Delete</button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                }
+                            </tbody>
                         </table>) : <div>No user exists. Please add a user.</div>}
                 </div>
 
